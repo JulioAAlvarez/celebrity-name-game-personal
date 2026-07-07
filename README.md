@@ -1,3 +1,5 @@
+> **Personal Fork:** This is a personal continuation of the group project originally developed with [Justice] and [Jacob] for the CityTech TTP 2026 Summer Bootcamp. Original repo: [Venus347/celebrity-name-game1](https://github.com/Venus347/celebrity-name-game1).
+
 # Celebrity Name Chain
 
 A full-stack multiplayer party game where players chain celebrity names. Built with Express, Prisma 7, PostgreSQL, and Ionic React.
