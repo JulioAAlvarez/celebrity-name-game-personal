@@ -3,6 +3,7 @@ import express from "express";
 import { PrismaClient } from "./generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import fs from 'fs';
+import gamesRouter from './routes/games.js';
 
 //Imports celebrity names from a json file and maps them onto an array
 const filePath: string = 'celeb_names.json';
@@ -45,6 +46,7 @@ function getCelebName() {
   return names[Math.floor(Math.random() * names.length)];
 };
 
+app.use('/api', gamesRouter);
 
 app.post('/games', async (req, res) => {
   try{
@@ -71,6 +73,7 @@ app.post('/games', async (req, res) => {
     })
   }
 });
+
 app.get('/games/join/:room_id', async (req, res) => {
   const room = String(req.params.room_id);
   
