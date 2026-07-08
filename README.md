@@ -1,8 +1,8 @@
-> **Personal Fork:** This is a personal continuation of the group project originally developed with [Justice] and [Jacob] for the CityTech TTP 2026 Summer Bootcamp. Original repo: [Venus347/celebrity-name-game1](https://github.com/Venus347/celebrity-name-game1).
-
-# Celebrity Name Chain
+# Celebrity Name Chain — Personal Edition
 
 A full-stack multiplayer party game where players chain celebrity names. Built with Express, Prisma 7, PostgreSQL, and Ionic React.
+
+This is a personal continuation of a group project originally developed for the CityTech TTP 2026 Summer Bootcamp. The original group repo can be found [here](https://github.com/Venus347/celebrity-name-game1).
 
 ---
 
@@ -12,7 +12,6 @@ A full-stack multiplayer party game where players chain celebrity names. Built w
 |-----------|--------|
 | Prisma Schema | ✅ Complete (`Game`, `Player`, `Celebrity`) |
 | Database Migration | ✅ Applied and tested |
-| SQL Dump | ✅ Generated and committed |
 | Express Routes | ✅ `POST /api/games` working |
 | Frontend (Ionic) | ✅ Running |
 | Full-Stack Connection | 🔄 In progress |
@@ -27,12 +26,19 @@ celebrity-name-game1/
 │   ├── prisma/
 │   │   ├── schema.prisma       # Database models
 │   │   └── migrations/         # Migration history
-│   ├── src/             # TypeScript source code
-│   ├── .env.example     # Environment variables template
-│   └── package.json     # Dependencies and scripts
+│   ├── src/
+│   │   ├── routes/             # API route handlers
+│   │   └── index.ts            # Server entry point
+│   ├── .env.example            # Environment variables template
+│   └── package.json            # Backend dependencies
 ├── client/              # Ionic React frontend
-├── data/                # Database dump (dump.sql)
-└── README.md            # Main documentation
+│   ├── src/
+│   │   ├── pages/              # Home, Game, etc.
+│   │   └── App.tsx             # Main app component
+│   └── package.json            # Frontend dependencies
+├── data/                # Database dumps
+├── archive/             # Archived files (e.g., CLASSMATE_README.md)
+└── README.md            # This file
 ```
 
 ---
@@ -44,6 +50,10 @@ celebrity-name-game1/
 - **Node.js** 22+ (use `nvm install 22`)
 - **Yarn** 4 (run `corepack enable`)
 - **PostgreSQL** 14+ (running locally)
+
+> For detailed setup instructions per operating system, see the [Prerequisites](#prerequisites) section.
+
+---
 
 ### Backend (`api/`)
 
@@ -62,7 +72,8 @@ DATABASE_URL="postgresql://postgres:your_password@localhost:5432/celebrity_db"
 Apply the schema:
 
 ```bash
-yarn prisma:migrate dev
+yarn prisma:generate
+yarn prisma db push
 ```
 
 Start the server:
@@ -71,7 +82,13 @@ Start the server:
 yarn dev
 ```
 
-Test: `GET http://localhost:3000/health` → `{ "ok": true }`
+The API will be available at `http://localhost:3000`.
+
+**Test the routes:**
+- `GET http://localhost:3000/api/test` → Router test
+- `POST http://localhost:3000/api/games` → Create a game
+
+---
 
 ### Frontend (`client/`)
 
@@ -93,7 +110,21 @@ Start the app:
 yarn dev
 ```
 
-The app will be available at `http://localhost:8100`.
+The app will be available at `http://localhost:8100` (or `http://localhost:5173` depending on your Vite config).
+
+---
+
+### Play Together (ngrok)
+
+Expose the API so others can test:
+
+```bash
+ngrok http 3000
+```
+
+Share the `https://...ngrok.io` URL.
+
+> ⚠️ **Never expose your database directly.** Only share the API via ngrok.
 
 ---
 
@@ -112,29 +143,28 @@ psql -d celebrity_db < data/dump.sql
 pg_dump -h localhost -U postgres -W -d celebrity_db > data/dump.sql
 ```
 
+### Reset Database (If Needed)
+
+If you run into migration issues:
+
+```bash
+psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS celebrity_db;"
+psql -h localhost -U postgres -c "CREATE DATABASE celebrity_db;"
+yarn prisma db push
+yarn prisma:generate
+```
+
 ---
 
 ## 🤖 AI Disclosure
 
-This project was developed with the assistance of AI tools. Each team member's usage is disclosed below:
+This project was developed with assistance from:
 
-| Team Member | AI Tool Used | Role |
-|-------------|--------------|------|
-| Julio A. Alvarez | DeepSeek (Des) | Prisma schema design, debugging support, documentation, and README structure |
-| Jake | None | Built backend and API integration independently |
-| Justice Kirton | Copilot | Frontend UI components and form handling |
+| Tool | Role |
+|------|------|
+| **DeepSeek (Des)** | Prisma schema design, debugging support, documentation, and README structure |
 
-All final decisions, code implementation, and testing were completed by the project team. AI was used as a learning and productivity aid.
-
----
-
-## 📝 Team Members
-
-| Name | GitHub | Role |
-|------|--------|------|
-| Jake | `Venus347` | Team Lead / Backend / Express API |
-| Justice Kirton | `Justicekirton` | Frontend / Ionic |
-| Julio A. Alvarez | `JulioAAlvarez` | Database / Prisma Schema |
+All final decisions, code implementation, and testing were completed by me.
 
 ---
 
@@ -148,12 +178,16 @@ All final decisions, code implementation, and testing were completed by the proj
 
 ## 📌 Next Steps
 
-- [ ] Merge `merge/backend-frontend` to `main`
 - [ ] Connect frontend to backend (axios/fetch)
-- [ ] Add remaining game routes (`POST /players`, `GET /games`)
+- [ ] Add remaining game routes (`GET /api/games`, `POST /api/players`)
 - [ ] Implement real game logic (turn management, score tracking)
-- [ ] Deploy or present final product
 
 ---
 
-**Made with 💻 and ☕ by the Celebrity Name Chain team.**
+## 🛠️ Troubleshooting
+
+If you run into issues, check the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) file for common problems and solutions.
+
+---
+
+**Made with 💻 and ☕ by Julio A. Alvarez**
