@@ -82,7 +82,7 @@ Create a `.env` and inside set your database URL to:
 ```
 DATABASE_URL="postgresql://postgres:your_password@localhost:5432/celebrity_db"
 ```
-(There is a '.env.example' file with a capy paste ready for you!)
+(There is an '.env.example' file with a copy-paste ready for you!)
 
 Apply the schema:
 
@@ -112,7 +112,7 @@ Create an `.env` and set the API URL:
 ```
 VITE_API_URL=http://localhost:3000
 ```
-(Just like above, there is a '.env.example' file with a capy paste ready for you )
+(Just like above, there is a '.env.example' file with a copy-paste ready for you!)
 
 Start the app:
 
