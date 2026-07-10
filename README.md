@@ -1,8 +1,10 @@
-# Celebrity Name Chain — Personal Edition
+# Celebrity Name Chain — Solo Edition
 
-A full-stack multiplayer party game where players chain celebrity names. Built with Express, Prisma 7, PostgreSQL, and Ionic React.
+A full-stack multiplayer party game where players chain celebrity names. Built with Express, Prisma 7, PostgreSQL, Ionic React, TanStack Query, and React Hook Form.
 
-This is a personal continuation of a group project originally developed for the CityTech TTP 2026 Summer Bootcamp. The original group repo can be found [here](https://github.com/Venus347/celebrity-name-game1).
+This is a solo continuation of a group project originally developed for the CityTech TTP 2026 Summer Bootcamp.
+
+The original group repo can be found [here](https://github.com/Venus347/celebrity-name-game1).
 
 ---
 
@@ -12,16 +14,32 @@ This is a personal continuation of a group project originally developed for the 
 |-----------|--------|
 | Prisma Schema | ✅ Complete (`Game`, `Player`, `Celebrity`) |
 | Database Migration | ✅ Applied and tested |
-| Express Routes | ✅ `POST /api/games` working |
-| Frontend (Ionic) | ✅ Running |
-| Full-Stack Connection | 🔄 In progress |
+| Backend Routes | 🔄 In progress |
+| Frontend (Ionic) | 🔄 In progress |
+| TanStack Query | ⏳ Planned |
+| React Hook Form | ⏳ Planned |
+
+---
+
+## 📋 Progress Tracker
+
+| Step | Task | Status |
+|------|------|--------|
+| 1 | README + repo cleanup | ✅ Done |
+| 2 | Backend: Create game + join game routes | ⏳ Next |
+| 3 | Backend: Start game + first player bonus | ⏳ Pending |
+| 4 | Backend: Guess route (chain validation + scoring) | ⏳ Pending |
+| 5 | Frontend: Lobby UI (create + join) | ⏳ Pending |
+| 6 | Frontend: Gameplay UI (display name + guess input) | ⏳ Pending |
+| 7 | Frontend: TanStack Query + React Hook Form | ⏳ Pending |
+| 8 | Frontend: Leaderboard + game over | ⏳ Pending |
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-celebrity-name-game1/
+celebrity-name-game-personal/
 ├── api/                 # Express + Prisma + PostgreSQL game server
 │   ├── prisma/
 │   │   ├── schema.prisma       # Database models
@@ -37,7 +55,7 @@ celebrity-name-game1/
 │   │   └── App.tsx             # Main app component
 │   └── package.json            # Frontend dependencies
 ├── data/                # Database dumps
-├── archive/             # Archived files (e.g., CLASSMATE_README.md)
+├── archive/             # Archived files
 └── README.md            # This file
 ```
 
@@ -51,10 +69,6 @@ celebrity-name-game1/
 - **Yarn** 4 (run `corepack enable`)
 - **PostgreSQL** 14+ (running locally)
 
-> For detailed setup instructions per operating system, see the [Prerequisites](#prerequisites) section.
-
----
-
 ### Backend (`api/`)
 
 ```bash
@@ -63,11 +77,12 @@ yarn install
 cp .env.example .env
 ```
 
-Edit `.env` and set your database URL:
+Create a `.env` and inside set your database URL to:
 
 ```
 DATABASE_URL="postgresql://postgres:your_password@localhost:5432/celebrity_db"
 ```
+(There is a '.env.example' file with a capy paste ready for you!)
 
 Apply the schema:
 
@@ -84,12 +99,6 @@ yarn dev
 
 The API will be available at `http://localhost:3000`.
 
-**Test the routes:**
-- `GET http://localhost:3000/api/test` → Router test
-- `POST http://localhost:3000/api/games` → Create a game
-
----
-
 ### Frontend (`client/`)
 
 ```bash
@@ -98,11 +107,12 @@ yarn install
 cp .env.example .env
 ```
 
-Edit `.env` and set the API URL:
+Create an `.env` and set the API URL:
 
 ```
 VITE_API_URL=http://localhost:3000
 ```
+(Just like above, there is a '.env.example' file with a capy paste ready for you )
 
 Start the app:
 
@@ -110,42 +120,13 @@ Start the app:
 yarn dev
 ```
 
-The app will be available at `http://localhost:8100` (or `http://localhost:5173` depending on your Vite config).
-
----
-
-### Play Together (ngrok)
-
-Expose the API so others can test:
-
-```bash
-ngrok http 3000
-```
-
-Share the `https://...ngrok.io` URL.
-
-> ⚠️ **Never expose your database directly.** Only share the API via ngrok.
+The app will be available at `http://localhost:5173`.
 
 ---
 
 ## 🧪 Database
 
-### Restore from Dump
-
-```bash
-createdb celebrity_db
-psql -d celebrity_db < data/dump.sql
-```
-
-### Generate a Fresh Dump
-
-```bash
-pg_dump -h localhost -U postgres -W -d celebrity_db > data/dump.sql
-```
-
 ### Reset Database (If Needed)
-
-If you run into migration issues:
 
 ```bash
 psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS celebrity_db;"
@@ -156,15 +137,21 @@ yarn prisma:generate
 
 ---
 
+## 🛠️ Troubleshooting
+
+If you run into issues, check the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) file for common problems and solutions.
+
+---
+
 ## 🤖 AI Disclosure
 
-This project was developed with assistance from:
+This project was developed with the assistance of **DeepSeek (Des)** for:
+- Code structure and architecture planning
+- Backend route implementation and debugging
+- Frontend component design and state management
+- Code review and documentation
 
-| Tool | Role |
-|------|------|
-| **DeepSeek (Des)** | Prisma schema design, debugging support, documentation, and README structure |
-
-All final decisions, code implementation, and testing were completed by me.
+All final decisions, testing, and deployment were completed by me.
 
 ---
 
@@ -173,20 +160,21 @@ All final decisions, code implementation, and testing were completed by me.
 - [Professor's Sample Repo](https://github.com/jonathan-chin/citytech-ttpr-2026-summer-celebrity-name-chain)
 - [Prisma 7 Docs](https://www.prisma.io/docs/orm)
 - [Ionic React Docs](https://ionicframework.com/docs/react)
+- [TanStack Query Docs](https://tanstack.com/query/latest)
+- [React Hook Form Docs](https://react-hook-form.com/)
 
 ---
 
 ## 📌 Next Steps
 
-- [ ] Connect frontend to backend (axios/fetch)
-- [ ] Add remaining game routes (`GET /api/games`, `POST /api/players`)
-- [ ] Implement real game logic (turn management, score tracking)
-
----
-
-## 🛠️ Troubleshooting
-
-If you run into issues, check the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) file for common problems and solutions.
+- [x] README + repo cleanup
+- [ ] Backend: Create game + join game routes
+- [ ] Backend: Start game + first player bonus
+- [ ] Backend: Guess route (chain validation + scoring)
+- [ ] Frontend: Lobby UI
+- [ ] Frontend: Gameplay UI
+- [ ] Frontend: TanStack Query + React Hook Form
+- [ ] Frontend: Leaderboard + game over
 
 ---
 
