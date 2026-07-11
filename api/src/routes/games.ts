@@ -1,25 +1,142 @@
+// ============================================
+// games.ts — Game Routes (Solo Version)
+// ============================================
+// This file handles all routes related to game rooms.
+// Uses the shared Prisma client and names array from index.ts.
+
 import { Router } from 'express';
+import { prisma, names } from '../index.js';
 
 const router = Router();
 
-// GET /api/test — test route
+// ============================================
+// GET /api/test — Simple test route
+// ============================================
 router.get('/test', (req, res) => {
   res.json({ message: 'Router is working!' });
 });
 
-// POST /api/games — create a new game
-router.post('/games', (req, res) => {
-  const { roomCode } = req.body;
+// ============================================
+// POST /api/games — Create a new game (host)
+// ============================================
+// Purpose: Creates a new game room with a unique room code.
+// The host is automatically added as the first player.
+// Expects: { "roomCode": "TEST01", "username": "host" }
+// Returns: The created game object with the host player.
+// Errors:
+//   - 400: Missing roomCode or username
+//   - 409: Room code already exists
+//   - 500: Database or server error
+router.post('/games', async (req, res) => {
+  const { roomCode, username } = req.body;
 
-  if (!roomCode) {
-    return res.status(400).json({ error: 'roomCode is required' });
+  if (!roomCode || !username) {
+    return res.status(400).json({ error: 'roomCode and username are required' });
   }
 
-  res.status(201).json({
-    id: 'mock-id',
-    roomCode: roomCode,
-    message: 'Game created (mock)'
-  });
+  try {
+    // Check if room code already exists
+    const existingGame = await prisma.game.findUnique({
+      where: { roomCode }
+    });
+
+    if (existingGame) {
+      return res.status(409).json({ error: 'Room code already in use' });
+    }
+
+    // Pick a random celebrity name to start the chain
+    const randomCeleb = names[Math.floor(Math.random() * names.length)];
+
+    // Create the game with the host as the first player
+    const game = await prisma.game.create({
+      data: {
+        roomCode,
+        currentName: randomCeleb,
+        players: {
+          create: {
+            username,
+            score: 0,
+            isHost: true,
+            isReady: false
+          }
+        }
+      },
+      include: {
+        players: true
+      }
+    });
+
+    res.status(201).json(game);
+  } catch (error) {
+    console.error('Error creating game:', error);
+    res.status(500).json({ error: 'Failed to create game' });
+  }
+});
+
+// ============================================
+// POST /api/games/:roomCode/join — Join a game
+// ============================================
+// Purpose: Adds a player to an existing game.
+// Expects: { "username": "sam" } in the request body
+// Returns: The updated game object with the new player.
+// Errors:
+//   - 400: Missing username
+//   - 404: Game not found
+//   - 409: Username already taken in this game
+//   - 500: Database or server error
+router.post('/games/:roomCode/join', async (req, res) => {
+  const { roomCode } = req.params;
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: 'username is required' });
+  }
+
+  try {
+    // Find the game
+    const game = await prisma.game.findUnique({
+      where: { roomCode },
+      include: { players: true }
+    });
+
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Check if username is already taken in this game
+    const existingPlayer = game.players.find(p => p.username === username);
+    if (existingPlayer) {
+      return res.status(409).json({ error: 'Username already taken in this game' });
+    }
+
+    // Check if game has already started
+    if (game.hasStarted) {
+      return res.status(400).json({ error: 'Game has already started' });
+    }
+
+    // Add the player
+    const updatedGame = await prisma.game.update({
+      where: { roomCode },
+      data: {
+        players: {
+          create: {
+            username,
+            score: 0,
+            isHost: false,
+            isReady: false
+          }
+        }
+      },
+      include: {
+        players: true
+      }
+    });
+
+    res.status(201).json(updatedGame);
+  } catch (error) {
+    console.error('Error joining game:', error);
+    res.status(500).json({ error: 'Failed to join game' });
+  }
 });
 
 export default router;
