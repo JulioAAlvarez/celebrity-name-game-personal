@@ -1,10 +1,8 @@
-/// api/prisma/schema.prisma
-
 // ============================================
 // schema.prisma — Database Schema (Solo Version)
 // ============================================
 // This file defines the database models for the Celebrity Name Chain game.
-// It includes Game, Player, and Celebrity models with relationships.
+// Players type their own names — no celebrity database is needed.
 
 generator client {
   provider = "prisma-client-js"
@@ -20,13 +18,13 @@ datasource db {
 // ============================================
 // A game room that players can join.
 // - roomCode: Unique code for players to join (e.g., "TEST01")
-// - currentName: The current celebrity name in the chain
+// - currentName: The current celebrity name in the chain (set by players)
 // - hasStarted: Whether the game has started (host controls this)
 // - players: List of players in the game
 model Game {
   id          String   @id @default(cuid())
   roomCode    String   @unique
-  currentName String?
+  currentName String?   // Set by the starting player or by the first correct guess
   hasStarted  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -57,22 +55,4 @@ model Player {
 
   // A player cannot have the same username twice in the same game
   @@unique([gameId, username])
-}
-
-// ============================================
-// CELEBRITY MODEL (Optional — for future use)
-// ============================================
-// Tracks which celebrities have been used in a game.
-// This helps prevent repeats in the same game.
-model Celebrity {
-  id        String   @id @default(cuid())
-  name      String
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String
-
-  // A celebrity name can only be used once per game
-  @@unique([gameId, name])
 }

@@ -2,10 +2,10 @@
 // games.ts — Game Routes (Solo Version)
 // ============================================
 // This file handles all routes related to game rooms.
-// Uses the shared Prisma client and names array from index.ts.
+// Uses the shared Prisma client from index.ts.
 
 import { Router } from 'express';
-import { prisma, names } from '../index.js';
+import { prisma } from '../index.js';
 
 const router = Router();
 
@@ -23,10 +23,6 @@ router.get('/test', (req, res) => {
 // The host is automatically added as the first player.
 // Expects: { "roomCode": "TEST01", "username": "host" }
 // Returns: The created game object with the host player.
-// Errors:
-//   - 400: Missing roomCode or username
-//   - 409: Room code already exists
-//   - 500: Database or server error
 router.post('/games', async (req, res) => {
   const { roomCode, username } = req.body;
 
@@ -44,14 +40,11 @@ router.post('/games', async (req, res) => {
       return res.status(409).json({ error: 'Room code already in use' });
     }
 
-    // Pick a random celebrity name to start the chain
-    const randomCeleb = names[Math.floor(Math.random() * names.length)];
-
     // Create the game with the host as the first player
     const game = await prisma.game.create({
       data: {
         roomCode,
-        currentName: randomCeleb,
+        currentName: null, // No initial name — the starter will set it
         players: {
           create: {
             username,
@@ -79,11 +72,6 @@ router.post('/games', async (req, res) => {
 // Purpose: Adds a player to an existing game.
 // Expects: { "username": "sam" } in the request body
 // Returns: The updated game object with the new player.
-// Errors:
-//   - 400: Missing username
-//   - 404: Game not found
-//   - 409: Username already taken in this game
-//   - 500: Database or server error
 router.post('/games/:roomCode/join', async (req, res) => {
   const { roomCode } = req.params;
   const { username } = req.body;
