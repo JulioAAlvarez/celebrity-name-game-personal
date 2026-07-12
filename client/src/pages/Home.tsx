@@ -1,10 +1,24 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonItem, IonText, IonList, IonLabel } from '@ionic/react';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonButton,
+  IonInput,
+  IonItem,
+  IonText,
+  IonList,
+  IonLabel,
+  IonChip,
+  IonCard,
+  IonCardContent,
+} from '@ionic/react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import api from '../api';
 
-// Types
 interface Player {
   id: string;
   username: string;
@@ -23,14 +37,10 @@ interface Game {
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const queryClient = useQueryClient();
-
-  // Form state
   const [username, setUsername] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [createdRoomCode, setCreatedRoomCode] = useState('');
 
-  // Create game mutation
   const createGameMutation = useMutation({
     mutationFn: async () => {
       const newRoomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -44,10 +54,9 @@ const Home: React.FC = () => {
     },
     onError: () => {
       alert('Failed to create room. Please try again.');
-    }
+    },
   });
 
-  // Join game mutation
   const joinGameMutation = useMutation({
     mutationFn: async () => {
       const response = await api.post(`/games/${roomCode}/join`, { username });
@@ -58,7 +67,7 @@ const Home: React.FC = () => {
     },
     onError: () => {
       alert('Failed to join room. Please check the room code and try again.');
-    }
+    },
   });
 
   return (
@@ -69,53 +78,59 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonText>
-          <h2>Celebrity Name Chain</h2>
-          <p>Enter a username, then create or join a room.</p>
-        </IonText>
-
-        <IonItem>
-          <IonInput
-            label="Username"
-            value={username}
-            placeholder="Enter your username"
-            onIonInput={(e) => setUsername(e.detail.value ?? '')}
-          />
-        </IonItem>
-
-        <IonItem>
-          <IonInput
-            label="Room Code"
-            value={roomCode}
-            placeholder="Enter room code to join"
-            onIonInput={(e) => setRoomCode(e.detail.value?.toUpperCase() ?? '')}
-          />
-        </IonItem>
-
-        <IonButton
-          expand="block"
-          onClick={() => createGameMutation.mutate()}
-          disabled={!username || createGameMutation.isPending}
-        >
-          {createGameMutation.isPending ? 'Creating...' : 'Create Room'}
-        </IonButton>
-
-        <IonButton
-          expand="block"
-          color="secondary"
-          onClick={() => joinGameMutation.mutate()}
-          disabled={!username || !roomCode || joinGameMutation.isPending}
-        >
-          {joinGameMutation.isPending ? 'Joining...' : 'Join Room'}
-        </IonButton>
-
-        {createdRoomCode && (
-          <IonItem lines="none">
+        <IonCard>
+          <IonCardContent>
             <IonText>
-              <p>Your room code: <strong>{createdRoomCode}</strong></p>
+              <h2>Celebrity Name Chain</h2>
+              <p>Enter a username, then create or join a room.</p>
             </IonText>
-          </IonItem>
-        )}
+
+            <IonItem>
+              <IonInput
+                label="Username"
+                labelPlacement="stacked"
+                value={username}
+                placeholder="Enter your username"
+                onIonInput={(e) => setUsername(e.detail.value ?? '')}
+              />
+            </IonItem>
+
+            <IonItem>
+              <IonInput
+                label="Room Code"
+                labelPlacement="stacked"
+                value={roomCode}
+                placeholder="Enter room code to join"
+                onIonInput={(e) => setRoomCode(e.detail.value?.toUpperCase() ?? '')}
+              />
+            </IonItem>
+
+            <IonButton
+              expand="block"
+              onClick={() => createGameMutation.mutate()}
+              disabled={!username || createGameMutation.isPending}
+            >
+              {createGameMutation.isPending ? 'Creating...' : 'Create Room'}
+            </IonButton>
+
+            <IonButton
+              expand="block"
+              color="secondary"
+              onClick={() => joinGameMutation.mutate()}
+              disabled={!username || !roomCode || joinGameMutation.isPending}
+            >
+              {joinGameMutation.isPending ? 'Joining...' : 'Join Room'}
+            </IonButton>
+
+            {createdRoomCode && (
+              <IonItem lines="none">
+                <IonText>
+                  <p>Your room code: <strong>{createdRoomCode}</strong></p>
+                </IonText>
+              </IonItem>
+            )}
+          </IonCardContent>
+        </IonCard>
       </IonContent>
     </IonPage>
   );
