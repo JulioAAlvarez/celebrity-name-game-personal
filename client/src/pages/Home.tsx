@@ -8,9 +8,6 @@ import {
   IonInput,
   IonItem,
   IonText,
-  IonList,
-  IonLabel,
-  IonChip,
   IonCard,
   IonCardContent,
 } from '@ionic/react';
@@ -19,27 +16,34 @@ import { useHistory } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import api from '../api';
 
-interface Player {
-  id: string;
-  username: string;
-  score: number;
-  isHost: boolean;
-  isReady: boolean;
-}
-
-interface Game {
-  id: string;
-  roomCode: string;
-  currentName: string | null;
-  hasStarted: boolean;
-  players: Player[];
-}
-
 const Home: React.FC = () => {
   const history = useHistory();
   const [username, setUsername] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [createdRoomCode, setCreatedRoomCode] = useState('');
+
+  // Test API connection
+  const testApi = async () => {
+    try {
+      const response = await api.get('/test');
+      console.log('API test response:', response.data);
+      alert('API is working!');
+    } catch (error) {
+      console.error('API test error:', error);
+      alert('API is not reachable. Check console for details.');
+    }
+  };
+
+  const testFetch = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/test');
+      const data = await response.json();
+     console.log('Fetch test:', data);
+      alert('Fetch worked!');
+      } catch (error) {
+        console.error('Fetch error:', error);
+    }
+  };
 
   const createGameMutation = useMutation({
     mutationFn: async () => {
@@ -52,7 +56,8 @@ const Home: React.FC = () => {
       setRoomCode(data.roomCode);
       history.push('/game', { roomCode: data.roomCode, username, isHost: true });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Create room error:', error);
       alert('Failed to create room. Please try again.');
     },
   });
@@ -65,21 +70,11 @@ const Home: React.FC = () => {
     onSuccess: (data) => {
       history.push('/game', { roomCode, username, isHost: false });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Join room error:', error);
       alert('Failed to join room. Please check the room code and try again.');
     },
   });
-
-  const testApi = async () => {
-    try {
-      const response = await api.get('/test');
-      console.log('API test response:', response.data);
-      alert('API is working!');
-    } catch (error) {
-      console.error('API test reponse:', error);
-      alert('API is not reachable. Check console for details.');
-    }
-};
 
   return (
     <IonPage>
@@ -133,8 +128,16 @@ const Home: React.FC = () => {
               {joinGameMutation.isPending ? 'Joining...' : 'Join Room'}
             </IonButton>
 
-            <IonButton expand="block" color="warning" onClick={testApi}>
+            <IonButton
+              expand="block"
+              color="warning"
+              onClick={testApi}
+            >
               Test API Connection
+            </IonButton>
+
+            <IonButton expand="block" color="tertiary" onClick={testFetch}>
+              Test Fetch
             </IonButton>
 
             {createdRoomCode && (

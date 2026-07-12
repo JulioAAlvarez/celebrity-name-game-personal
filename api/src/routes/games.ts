@@ -131,6 +131,33 @@ router.post('/games/:roomCode/join', async (req, res) => {
 });
 
 // ============================================
+// GET /api/games/:roomCode — Get game state
+// ============================================
+router.get('/games/:roomCode', async (req, res) => {
+  console.log(`📥 Received request to get game state for room: ${req.params.roomCode}`);
+
+  const { roomCode } = req.params;
+
+  try {
+    const game = await prisma.game.findUnique({
+      where: { roomCode },
+      include: { players: true }
+    });
+
+    if (!game) {
+      console.log(`❌ Game with room code "${roomCode}" not found.`);
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    console.log(`✅ Game state fetched for room "${roomCode}"`);
+    res.json(game);
+  } catch (error) {
+    console.error('❌ Error fetching game state:', error);
+    res.status(500).json({ error: 'Failed to fetch game state' });
+  }
+});
+
+// ============================================
 // POST /api/games/:roomCode/start — Start the game
 // ============================================
 router.post('/games/:roomCode/start', async (req, res) => {

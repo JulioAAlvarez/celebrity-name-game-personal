@@ -13,10 +13,6 @@ import {
   IonChip,
   IonCard,
   IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonBadge,
 } from '@ionic/react';
 import React, { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -74,6 +70,9 @@ const Game: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['game', roomCode] });
       setNameToSet('');
     },
+    onError: (error: any) => {
+      alert(error.response?.data?.error || 'Failed to set name.');
+    },
   });
 
   const guessMutation = useMutation({
@@ -102,6 +101,9 @@ const Game: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['game', roomCode] });
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.error || 'Failed to start game.');
     },
   });
 
