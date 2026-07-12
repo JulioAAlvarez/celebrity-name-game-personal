@@ -70,6 +70,17 @@ const Home: React.FC = () => {
     },
   });
 
+  const testApi = async () => {
+    try {
+      const response = await api.get('/test');
+      console.log('API test response:', response.data);
+      alert('API is working!');
+    } catch (error) {
+      console.error('API test reponse:', error);
+      alert('API is not reachable. Check console for details.');
+    }
+};
+
   return (
     <IonPage>
       <IonHeader>
@@ -120,6 +131,10 @@ const Home: React.FC = () => {
               disabled={!username || !roomCode || joinGameMutation.isPending}
             >
               {joinGameMutation.isPending ? 'Joining...' : 'Join Room'}
+            </IonButton>
+
+            <IonButton expand="block" color="warning" onClick={testApi}>
+              Test API Connection
             </IonButton>
 
             {createdRoomCode && (
