@@ -1,87 +1,66 @@
+// ============================================
+// index.ts — Main Server File (Solo Version)
+// ============================================
+// This is the entry point for the Express server.
+// It sets up middleware and mounts route handlers.
+
 import "dotenv/config";
 import express from "express";
+import cors from 'cors';
 import { PrismaClient } from "./generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-import fs from 'fs';
+
+// Import route handlers
 import gamesRouter from './routes/games.js';
 
-//Imports celebrity names from a json file and maps them onto an array
-const filePath: string = 'celeb_names.json';
-const a = fs.readFileSync(filePath, 'utf8');
-interface celeb{
-  name: string;
-}
-const data: celeb = JSON.parse(a);
-const output = Object.values(data).map(x => x);
-const names: string[] = output.map(x => x.name);
-console.log(names[0]);
+// ============================================
+// EXPRESS APP SETUP
+// ============================================
+const app = express();
+const PORT = 3000;
 
-
-const app = express(); 
+// ============================================
+// DATABASE SETUP (Prisma 7)
+// ============================================
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 });
-const prisma = new PrismaClient({adapter});
+const prisma = new PrismaClient({ adapter });
+
+// ============================================
+// MIDDLEWARE
+// ============================================
 app.use(express.json());
-const PORT = 3000;
-
-
-function getRoomCode() {
-  let roomID = "Room_";
-  for (let i = 0; i < 7;i++){
-    roomID += String(Math.floor(Math.random()*10));
-  }
-  return roomID;
-}
-
-function getPlayerID(){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let playerID = "";
-  for (let i = 0; i<7; i++){
-    playerID += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return playerID;
-}
-function getCelebName() {
-  return names[Math.floor(Math.random() * names.length)];
-};
-
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
+// ============================================
+// ROUTES
+// ============================================
+// Mount the game routes at the /api prefix.
 app.use('/api', gamesRouter);
 
-app.post('/games', async (req, res) => {
-  try{
-    const player_id = getPlayerID();
-    const room_code = getRoomCode();
-    const celeb_name = getCelebName();
-    let players : string[] = [];
-    players.push(player_id)
-
-    const game = await prisma.game.create({
-      data: {
-        roomCode: room_code,
-        currentName: celeb_name,
-        players: players
-      }
-    })
-    return res.json(game);
-  } catch(error){
-    if (error instanceof Error){
-      console.log(error.message);
-    }
-    return res.status(500).json({
-      message: "Error: failed to start game.",
-    })
-  }
+// ============================================
+// ROOT & HEALTH ROUTES
+// ============================================
+app.get('/', (req, res) => {
+  res.json({ message: 'Celebrity Name Chain API is running' });
 });
 
-app.get('/games/join/:room_id', async (req, res) => {
-  const room = String(req.params.room_id);
-  
+app.get('/health', (req, res) => {
+  res.json({ ok: true });
 });
 
-
+// ============================================
+// START SERVER
+// ============================================
 app.listen(PORT, () => {
-  console.log('server has started');
-})
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
 
-
+// ============================================
+// EXPORTS
+// ============================================
+// Export prisma so other files can use the same database client instance.
+export { prisma };
