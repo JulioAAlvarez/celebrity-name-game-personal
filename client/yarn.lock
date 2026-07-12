@@ -2991,6 +2991,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.18.1":
+  version: 1.18.1
+  resolution: "axios@npm:1.18.1"
+  dependencies:
+    follow-redirects: "npm:^1.16.0"
+    form-data: "npm:^4.0.5"
+    https-proxy-agent: "npm:^5.0.1"
+    proxy-from-env: "npm:^2.1.0"
+  checksum: 10c0/9d9378a3af0d0ad730a52ad9d15ec7201f3926ad6e7e8bbffc5ae21ca2835ad11d1d9598698f5dd9718917486039f55ea1d7dc23d8e44fa827a55cc3262c02fc
+  languageName: node
+  linkType: hard
+
 "babel-plugin-polyfill-corejs2@npm:^0.4.15":
   version: 0.4.17
   resolution: "babel-plugin-polyfill-corejs2@npm:0.4.17"
@@ -3361,6 +3373,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.3.3"
     "@vitejs/plugin-legacy": "npm:^5.0.0"
     "@vitejs/plugin-react": "npm:^4.0.1"
+    axios: "npm:^1.18.1"
     cypress: "npm:^13.5.0"
     eslint: "npm:^9.20.1"
     eslint-plugin-react: "npm:^7.32.2"
@@ -3371,7 +3384,7 @@ __metadata:
     jsdom: "npm:^22.1.0"
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
-    react-hook-form: "npm:^7.80.0"
+    react-hook-form: "npm:^7.81.0"
     react-router: "npm:^5.3.4"
     react-router-dom: "npm:^5.3.4"
     terser: "npm:^5.4.0"
@@ -4441,6 +4454,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"follow-redirects@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10c0/a1e2900163e6f1b4d1ed5c221b607f41decbab65534c63fe7e287e40a5d552a6496e7d9d7d976fa4ba77b4c51c11e5e9f683f10b43011ea11e442ff128d0e181
+  languageName: node
+  linkType: hard
+
 "for-each@npm:^0.3.3, for-each@npm:^0.3.5":
   version: 0.3.5
   resolution: "for-each@npm:0.3.5"
@@ -4457,7 +4480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0, form-data@npm:~4.0.4":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.5, form-data@npm:~4.0.4":
   version: 4.0.6
   resolution: "form-data@npm:4.0.6"
   dependencies:
@@ -6325,6 +6348,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-from-env@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "proxy-from-env@npm:2.1.0"
+  checksum: 10c0/ed01729fd4d094eab619cd7e17ce3698b3413b31eb102c4904f9875e677cd207392795d5b4adee9cec359dfd31c44d5ad7595a3a3ad51c40250e141512281c58
+  languageName: node
+  linkType: hard
+
 "psl@npm:^1.1.33":
   version: 1.15.0
   resolution: "psl@npm:1.15.0"
@@ -6378,12 +6408,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.80.0":
-  version: 7.80.0
-  resolution: "react-hook-form@npm:7.80.0"
+"react-hook-form@npm:^7.81.0":
+  version: 7.81.0
+  resolution: "react-hook-form@npm:7.81.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/9a2a1316a562d3a144e3854ce22123b08fe886c8e0327a0682d3d30312a851beac115049f285bacd20d9dd1bdfe7d05333b5dab8ecb9b18c2976557220c8e648
+  checksum: 10c0/bdb5b0bb44050ffa54425dbbea855e55696847ae8ff87f77fe43bc85d830d67735ecdeaaf188ba30d9567fad8b0c47a5f42a9a522ed9411222773512e0e7f37b
   languageName: node
   linkType: hard
 
